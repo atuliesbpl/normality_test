@@ -1,0 +1,35 @@
+def normality_test(df,feature,alpha = 0.05):
+    """
+    normality test using Shapiro-Wilk Test and  Q-Q plot
+    Parameters
+    ------
+    df: pd.DataFrame
+        dataframe
+    feature: str
+        feature for which fft has to plot
+    Returns
+    ------
+    result: matplotlib image
+        distribution-plot
+    status: str
+        status of hypothesis testing
+    """
+    try:
+        from scipy.stats import shapiro
+        # normality test
+        stat, p = shapiro(df[feature])
+        print('Statistics=%.3f, p=%.3f' % (stat, p))
+        # interpret results
+        if p > alpha:
+            status= 'Sample looks Gaussian (fail to reject H0)'
+        else:
+            status= 'Sample does not look Gaussian (reject H0)'
+        import matplotlib.pyplot as plt
+        import statsmodels.api as sm
+        import scipy.stats as stats
+        result = sm.qqplot(df[feature],line='45',fit=True,dist=stats.norm)
+    except Exception as e:
+        result = str(e)
+        status = 'failed'
+        print('error at performing normality test.'.format(e))
+    return result , status
